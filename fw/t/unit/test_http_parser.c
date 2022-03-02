@@ -3135,6 +3135,7 @@ TEST(http_parser, req_hop_by_hop)
 	"Dummy7: 7\r\n"							\
 	"Dummy8: 8\r\n"							\
 	"Buzz: is hop-by-hop header\r\n"				\
+	"Keep-Alivee: is hop-by-hop header\r\n"				\
 	"Dummy9: 9\r\n"							\
 	"Cache-Control: max-age=1, no-store, min-fresh=30\r\n"		\
 	"Pragma: no-cache, fooo \r\n"					\
@@ -3147,8 +3148,8 @@ TEST(http_parser, req_hop_by_hop)
 		REQ_HBH_END)
 	{
 		ht = req->h_tbl;
-		/* Common (raw) headers: 17 total with 10 dummies. */
-		EXPECT_EQ(ht->off, TFW_HTTP_HDR_RAW + 17);
+		/* Common (raw) headers: 18 total with 10 dummies. */
+		EXPECT_EQ(ht->off, TFW_HTTP_HDR_RAW + 18);
 
 		for(id = 0; id < ht->off; ++id) {
 			field = &ht->tbl[id];
@@ -3162,8 +3163,8 @@ TEST(http_parser, req_hop_by_hop)
 		REQ_HBH_END)
 	{
 		ht = req->h_tbl;
-		/* Common (raw) headers: 17 total with 10 dummies. */
-		EXPECT_EQ(ht->off, TFW_HTTP_HDR_RAW + 17);
+		/* Common (raw) headers: 18 total with 10 dummies. */
+		EXPECT_EQ(ht->off, TFW_HTTP_HDR_RAW + 18);
 
 		for(id = 0; id < ht->off; ++id) {
 			field = &ht->tbl[id];
@@ -3185,8 +3186,8 @@ TEST(http_parser, req_hop_by_hop)
 		REQ_HBH_END)
 	{
 		ht = req->h_tbl;
-		/* Common (raw) headers: 17 total with 10 dummies. */
-		EXPECT_EQ(ht->off, TFW_HTTP_HDR_RAW + 17);
+		/* Common (raw) headers: 18 total with 10 dummies. */
+		EXPECT_EQ(ht->off, TFW_HTTP_HDR_RAW + 18);
 
 		for(id = 0; id < ht->off; ++id) {
 			field = &ht->tbl[id];
@@ -3195,6 +3196,32 @@ TEST(http_parser, req_hop_by_hop)
 			case TFW_HTTP_HDR_KEEP_ALIVE:
 			case TFW_HTTP_HDR_RAW + 4:
 			case TFW_HTTP_HDR_RAW + 12:
+				EXPECT_TRUE(field->flags & TFW_STR_HBH_HDR);
+				break;
+			default:
+				EXPECT_FALSE(field->flags & TFW_STR_HBH_HDR);
+				break;
+			}
+		}
+	}
+
+	/* Hop-by-hop headers: Connection, Keep-Alive, Keep-Alivee and other */
+	FOR_REQ(REQ_HBH_START
+		"Connection: Foo, Keep-Alive, Bar, Buzz, Keep-Alivee\r\n"
+		REQ_HBH_END)
+	{
+		ht = req->h_tbl;
+		/* Common (raw) headers: 18 total with 10 dummies. */
+		EXPECT_EQ(ht->off, TFW_HTTP_HDR_RAW + 18);
+
+		for(id = 0; id < ht->off; ++id) {
+			field = &ht->tbl[id];
+			switch (id) {
+			case TFW_HTTP_HDR_CONNECTION:
+			case TFW_HTTP_HDR_KEEP_ALIVE:
+			case TFW_HTTP_HDR_RAW + 4:
+			case TFW_HTTP_HDR_RAW + 12:
+			case TFW_HTTP_HDR_RAW + 13:
 				EXPECT_TRUE(field->flags & TFW_STR_HBH_HDR);
 				break;
 			default:
