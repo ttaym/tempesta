@@ -124,7 +124,6 @@ typedef struct {
 		long			_date;
 		unsigned int		month_int;
 		unsigned int		cc_dir_flag;
-		unsigned char		*_saved_p;
 	};
 	TfwStr				_tmp_chunk;
 	TfwStr				hdr;

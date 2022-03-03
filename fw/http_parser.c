@@ -1460,12 +1460,10 @@ __parse_connection(TfwHttpMsg *hm, unsigned char *data, size_t len)
 		WARN_ON_ONCE(parser->_acc);
 		/* Boolean connection tokens */
 		TRY_CONN_TOKEN("close", {
-			parser->_saved_p = p;
 			__set_bit(TFW_HTTP_B_CONN_CLOSE, &parser->_acc);
 		});
 		/* Spec headers */
 		TRY_CONN_TOKEN("keep-alive", {
-			parser->_saved_p = p;
 			__set_bit(TFW_HTTP_B_CONN_KA, &parser->_acc);
 		});
 		TRY_STR_INIT();
@@ -1476,10 +1474,8 @@ __parse_connection(TfwHttpMsg *hm, unsigned char *data, size_t len)
 	__FSM_STATE(I_ConnTok) {
 		WARN_ON_ONCE(!parser->_acc);
 
-		if (!IS_WS(c) && c != ',' && !IS_CRLF(c)) {
-			p = parser->_saved_p;
+		if (!IS_WS(c) && c != ',' && !IS_CRLF(c))
 			__FSM_I_JMP(I_ConnOther);
-		}
 
 		if (test_bit(TFW_HTTP_B_CONN_KA, &parser->_acc)) {
 			register unsigned int hid = TFW_HTTP_HDR_KEEP_ALIVE;
