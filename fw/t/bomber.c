@@ -159,7 +159,7 @@ tfw_bmb_conn_drop(struct sock *sk)
 }
 
 static int
-tfw_bmb_print_msg(void *msg_data, unsigned char *data, size_t len,
+tfw_bmb_print_msg(void *msg_data, unsigned char *data, unsigned int len,
 		  unsigned int *read)
 {
 	printk(KERN_INFO "%.*s\n", (int)len, data);
@@ -249,7 +249,7 @@ tfw_bmb_msg_send(TfwBmbTask *task, int cn)
 			return;
 		}
 
-		r = fuzz_gen(&task->ctx, task->buf, &task->buf[BUF_SIZE], 0, 1,
+		r = fuzz_gen_h1(&task->ctx, task->buf, &task->buf[BUF_SIZE], 0, 1,
 			     FUZZ_REQ);
 		if (r < 0) {
 			T_ERR("Cannot generate HTTP request, r=%d\n", r);

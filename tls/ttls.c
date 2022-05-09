@@ -2134,7 +2134,7 @@ ttls_handshake_step(TlsCtx *tls, unsigned char *buf, size_t len, size_t hh_len,
  * The function adds the number of bytes parsed in @buf to @read.
  */
 int
-ttls_recv(void *tls_data, unsigned char *buf, size_t len, unsigned int *read)
+ttls_recv(void *tls_data, unsigned char *buf, unsigned int len, unsigned int *read)
 {
 	int r;
 	unsigned int hh_len = 0, parsed = *read;
@@ -2142,7 +2142,7 @@ ttls_recv(void *tls_data, unsigned char *buf, size_t len, unsigned int *read)
 	TlsIOCtx *io = &tls->io_in;
 
 	BUG_ON(!tls || !tls->conf);
-	T_DBG3("%s: tls=%pK len=%lu read=%u\n", __func__, tls, len, *read);
+	T_DBG3("%s: tls=%pK len=%u read=%u\n", __func__, tls, len, *read);
 
 	if (!(io->st_flags & TTLS_F_ST_HDRIV)) {
 		unsigned int delta;
