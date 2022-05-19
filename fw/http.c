@@ -6681,8 +6681,7 @@ next_msg:
 	 * forwarding here before sibling processing because after upgrade
 	 * http semantics for pipelined responses no longer apply.
 	 */
-	if (tfw_http_resp_is_websocket_upgrade((TfwHttpResp *)hmresp))
-		websocket = true;
+	websocket = tfw_http_resp_is_websocket_upgrade((TfwHttpResp *)hmresp);
 
 	/*
 	 * If @skb's data has not been processed in full, then
