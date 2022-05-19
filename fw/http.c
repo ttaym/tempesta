@@ -5944,10 +5944,8 @@ next_msg:
 						break;
 					}
 				}
-				else
-				{
-					if (likely(!tfw_h2_parse_req_finish(req)))
-						break;
+				else if (likely(!tfw_h2_parse_req_finish(req))) {
+					break;
 				}
 				TFW_INC_STAT_BH(clnt.msgs_otherr);
 				tfw_http_req_parse_block(req, 500,
