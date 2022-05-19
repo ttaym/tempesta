@@ -8748,9 +8748,7 @@ tfw_h2_parse_req_hdr(unsigned char *data, unsigned long len, TfwHttpReq *req,
 							 TFW_HTTP_METH_OPTIONS);
 			}
 			if (C4_INT(p, 'C', 'O', 'N', 'N')
-			    && *(p + 4) == 'E'
-			    && *(p + 5) == 'C'
-			    && *(p + 6) == 'T')
+			    && C4_INT(p + 3, 'N', 'E', 'C', 'T'))
 			{
 				__FSM_H2_METHOD_COMPLETE(Req_RareMethods_7, 7,
 							 TFW_HTTP_METH_CONNECT);
