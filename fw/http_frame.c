@@ -589,6 +589,7 @@ static inline void
 tfw_h2_stream_clean(TfwH2Ctx *ctx, TfwStream *stream)
 {
 	TfwH2Conn *conn = container_of(ctx, TfwH2Conn, h2);
+
 	if (stream->proto == HTTP2_STREAM_PROTO_WEBSOCKET)
 		tfw_ws_stream_drop((TfwConn *)conn, stream);
 	tfw_h2_stop_stream(&ctx->sched, stream);
