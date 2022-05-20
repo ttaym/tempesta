@@ -38,8 +38,8 @@
 #define S_WEBSOCKET		"websocket"
 #define S_CONNECTION		"connection"
 #define S_UPGRADE		"upgrade"
-#define S_SEC_KEY		"sec-websocket-key"
-#define S_SEC_ACCEPT		"sec-websocket-accept"
+#define S_SEC_WS_KEY		"sec-websocket-key"
+#define S_SEC_WS_ACCEPT		"sec-websocket-accept"
 
 /*
  * The size of the buffer to store the value for ':status' pseudo-header

@@ -3719,7 +3719,7 @@ tfw_h2_adjust_req(TfwHttpReq *req)
 	const DEFINE_TFW_STR(fl_end, " " S_VERSION11 S_CRLF S_F_HOST);
 	const DEFINE_TFW_STR(connection_upgrade,
 			     S_CONNECTION S_DLM S_UPGRADE S_CRLF S_UPGRADE S_DLM);
-	const DEFINE_TFW_STR(sec_websocket, S_SEC_KEY S_DLM);
+	const DEFINE_TFW_STR(sec_websocket, S_SEC_WS_KEY S_DLM);
 	char *buf = *this_cpu_ptr(&g_buf);
 	char *xff_end = ss_skb_fmt_src_addr(req->msg.skb_head, buf);
 	const TfwStr h_xff = {
@@ -4634,11 +4634,11 @@ tfw_h2_resp_next_hdr(TfwHttpResp *resp, const TfwHdrMods *h_mods)
 	TfwHttpHdrTbl *ht = resp->h_tbl;
 	TfwStr sec_accept_hdr = {
 		.chunks = (TfwStr []){
-			{ .data = S_SEC_ACCEPT,
-			  .len = SLEN(S_SEC_ACCEPT), .flags = TFW_STR_NAME },
+			{ .data = S_SEC_WS_ACCEPT,
+			  .len = SLEN(S_SEC_WS_ACCEPT), .flags = TFW_STR_NAME },
 			{ .data = S_DLM, .len = SLEN(S_DLM) }
 		},
-		.len = SLEN(S_SEC_ACCEPT) + SLEN(S_DLM),
+		.len = SLEN(S_SEC_WS_ACCEPT) + SLEN(S_DLM),
 		.nchunks = 2
 	};
 	bool websocket = tfw_http_resp_is_websocket_upgrade(resp);
