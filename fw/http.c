@@ -5336,10 +5336,8 @@ tfw_h2_resp_adjust_fwd(TfwHttpResp *resp)
 	const TfwHdrMods *h_mods = tfw_vhost_get_hdr_mods(req->location,
 							  req->vhost,
 							  TFW_VHOST_HDRMOD_RESP);
-	bool websocket = false;
-	unsigned short status;
-
 	bool websocket = tfw_http_resp_is_websocket_upgrade(resp);
+	unsigned short status;
 
 	/*
 	 * Get ID of corresponding stream to prepare/send HTTP/2 response, and
