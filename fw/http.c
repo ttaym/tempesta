@@ -4919,10 +4919,7 @@ tfw_h2_make_frames(TfwHttpResp *resp, unsigned int stream_id,
 	TfwMsgIter *iter = &mit->iter;
 	TfwH2Ctx *ctx = tfw_h2_context(resp->req->conn);
 	unsigned long max_sz = ctx->rsettings.max_frame_sz;
-	unsigned char fr_flags = (b_len || local_body ||
-				  tfw_http_resp_is_websocket_upgrade(resp))
-			? HTTP2_F_END_HEADERS
-			: HTTP2_F_END_HEADERS | HTTP2_F_END_STREAM;
+	unsigned char fr_flags;
 
 	T_DBG2("%s: frame response with max frame size of %lu\n",
 	       __func__, max_sz);
@@ -4932,6 +4929,10 @@ tfw_h2_make_frames(TfwHttpResp *resp, unsigned int stream_id,
 	 */
 	if (WARN_ON_ONCE(!(skb_headlen(resp->msg.skb_head))))
 		return -ENOMEM;
+
+	fr_flags = (b_len || local_body || tfw_http_resp_is_websocket_upgrade(resp))
+			? HTTP2_F_END_HEADERS
+			: HTTP2_F_END_HEADERS | HTTP2_F_END_STREAM;
 	frame_hdr.type = HTTP2_HEADERS;
 	frame_hdr.length = min(max_sz, h_len);
 	frame_hdr.flags = (h_len <= max_sz) ? fr_flags : 0;
