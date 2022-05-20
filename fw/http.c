@@ -5369,10 +5369,7 @@ tfw_h2_resp_adjust_fwd(TfwHttpResp *resp)
 		hdrs_end = true;
 	}
 
-	if (websocket)
-		status = 200;
-	else
-		status = resp->status;
+	status = websocket ? 200 : resp->status;
 	r = tfw_h2_resp_status_write(resp, status, TFW_H2_TRANS_SUB,
 				     false);
 	if (unlikely(r))
