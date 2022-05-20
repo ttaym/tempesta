@@ -5875,7 +5875,7 @@ next_msg:
 				__set_bit(TFW_HTTP_B_HEADERS_PARSED, req->flags);
 			}
 
-			if (!test_bit(TFW_HTTP_B_HEADERS_PARSED, req->flags))
+			else if (!test_bit(TFW_HTTP_B_HEADERS_PARSED, req->flags))
 				goto skip;
 
 			if (ctx->hdr.type == HTTP2_DATA) {
