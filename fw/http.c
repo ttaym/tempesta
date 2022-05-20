@@ -5880,7 +5880,8 @@ next_msg:
 
 			if (ctx->hdr.type == HTTP2_DATA
 			    && stream->proto == HTTP2_STREAM_PROTO_WEBSOCKET)
-			       return tfw_ws_msg_process(conn, stream, skb);
+			{
+				return tfw_ws_msg_process(conn, stream, skb);
 			}
 
 			if (!test_bit(TFW_HTTP_B_UPGRADE_WEBSOCKET, req->flags)) {

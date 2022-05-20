@@ -86,10 +86,8 @@ typedef enum {
  * http/2, but we have to have a mean of differentiating protos to route
  * messages accordingly.
  */
-typedef enum {
-	HTTP2_STREAM_PROTO_H2		= 0,
-	HTTP2_STREAM_PROTO_WEBSOCKET,
-} TfwStreamProto;
+#define HTTP2_STREAM_PROTO_H2		0
+#define HTTP2_STREAM_PROTO_WEBSOCKET	1
 
 /**
  * Representation of HTTP/2 stream entity.
@@ -114,9 +112,9 @@ typedef struct tfw_stream_t {
 	spinlock_t		st_lock;
 	unsigned int		loc_wnd;
 	unsigned short		weight;
+	unsigned short		proto : 1;
 	TfwMsg			*msg;
 	TfwHttpParser		parser;
-	TfwStreamProto		proto;
 	TfwConn			*pair;
 } TfwStream;
 
