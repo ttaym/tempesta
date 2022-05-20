@@ -4757,9 +4757,7 @@ def:
 		/* Remove Sec-WebSocket-Accept header for websocket upgrade */
 		if (websocket && hid >= TFW_HTTP_HDR_RAW
 		    && !__hdr_name_cmp(tgt, &sec_accept_hdr))
-		{
 			continue;
-		}
 
 		/*
 		 * 'Server' header must be replaced; thus, remove the original
