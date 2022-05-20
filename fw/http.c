@@ -5361,6 +5361,7 @@ tfw_h2_resp_adjust_fwd(TfwHttpResp *resp)
 	if (unlikely(r))
 		goto clean;
 
+	/* In fact we always see mit->bnd == NULL on websocket h2 bootstrap */
 	if (!mit->bnd) {
 		TfwStr *last = TFW_STR_LAST(&resp->crlf);
 		mit->bnd = last->data + last->len;
