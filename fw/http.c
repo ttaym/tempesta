@@ -3822,17 +3822,14 @@ tfw_h2_adjust_req(TfwHttpReq *req)
 			       "no protocol found for CONNECT request\n");
 			return -EINVAL;
 		}
-		else
+
+		__h2_msg_hdr_val(&ht->tbl[TFW_HTTP_HDR_H2_PROTOCOL], &protocol_val);
+		if (!tfw_str_eq_cstr(&protocol_val, S_WEBSOCKET, SLEN(S_WEBSOCKET),
+				     TFW_STR_EQ_CASEI))
 		{
-			__h2_msg_hdr_val(&ht->tbl[TFW_HTTP_HDR_H2_PROTOCOL],
-					 &protocol_val);
-			if (!tfw_str_eq_cstr(&protocol_val, S_WEBSOCKET,
-					     SLEN(S_WEBSOCKET), TFW_STR_EQ_CASEI))
-			{
-				T_WARN("Cant convert h2 request to http/1.1: "
-				       "protocol not equals to 'websocket'\n");
-				return -EINVAL;
-			}
+			T_WARN("Cant convert h2 request to http/1.1: "
+				"protocol not equals to 'websocket'\n");
+			return -EINVAL;
 		}
 	}
 
