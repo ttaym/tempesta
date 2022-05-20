@@ -745,14 +745,14 @@ tfw_h2_stream_id_close(TfwHttpReq *req, unsigned char type,
 		return 0;
 	}
 
-	if (type < _HTTP2_UNDEFINED &&
-	    !STREAM_SEND_PROCESS(stream, type, flags))
+	if (type < _HTTP2_UNDEFINED)
 	{
-		id = stream->id;
-	}
+		if (!STREAM_SEND_PROCESS(stream, type, flags))
+			id = stream->id;
 
-	if (type < _HTTP2_UNDEFINED && !(flags & HTTP2_F_END_STREAM))
-		goto done;
+		if (!(flags & HTTP2_F_END_STREAM))
+			goto done;
+	}
 
 	req->stream = NULL;
 	stream->msg = NULL;
