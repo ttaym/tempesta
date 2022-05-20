@@ -5338,8 +5338,7 @@ tfw_h2_resp_adjust_fwd(TfwHttpResp *resp)
 	bool websocket = false;
 	unsigned short status;
 
-	if (tfw_http_resp_is_websocket_upgrade(resp))
-		websocket = true;
+	bool websocket = tfw_http_resp_is_websocket_upgrade(resp);
 
 	/*
 	 * Get ID of corresponding stream to prepare/send HTTP/2 response, and
