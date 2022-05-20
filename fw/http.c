@@ -5878,10 +5878,9 @@ next_msg:
 			else if (!test_bit(TFW_HTTP_B_HEADERS_PARSED, req->flags))
 				goto skip;
 
-			if (ctx->hdr.type == HTTP2_DATA) {
-				if (stream->proto == HTTP2_STREAM_PROTO_WEBSOCKET)
-					return tfw_ws_msg_process(conn, stream,
-								  skb);
+			if (ctx->hdr.type == HTTP2_DATA
+			    && stream->proto == HTTP2_STREAM_PROTO_WEBSOCKET)
+			       return tfw_ws_msg_process(conn, stream, skb);
 			}
 
 			if (!test_bit(TFW_HTTP_B_UPGRADE_WEBSOCKET, req->flags)) {
