@@ -93,6 +93,7 @@ TEST(http2_parser, parses_req_method)
 	TEST_REQ_METHOD(PUT);
 	TEST_REQ_METHOD(TRACE);
 	TEST_REQ_METHOD(UNLOCK);
+	TEST_REQ_METHOD(CONNECT);
 	/* Supported Non-RFC methods. */
 	TEST_REQ_METHOD(PURGE);
 
@@ -103,7 +104,6 @@ TEST(http2_parser, parses_req_method)
 	TEST_REQ_UNKNOWN(BIND);
 	TEST_REQ_UNKNOWN(CHECKIN);
 	TEST_REQ_UNKNOWN(CHECKOUT);
-	TEST_REQ_UNKNOWN(CONNECT);
 	TEST_REQ_UNKNOWN(LABEL);
 	TEST_REQ_UNKNOWN(LINK);
 	TEST_REQ_UNKNOWN(MERGE);
@@ -2752,7 +2752,7 @@ TEST(http2_parser, fuzzer)
 			INIT_FRAMES();
 			ADD_HEADERS_FRAME(str, headers_len);
 			ADD_DATA_FRAME(str + headers_len, body_len);
-			test_case_parse_prepare_h2();	
+			test_case_parse_prepare_h2();
 			switch (ret) {
 			case FUZZ_VALID:
 				TRY_PARSE_EXPECT_PASS(FUZZ_REQ_H2, CHUNK_ON);
