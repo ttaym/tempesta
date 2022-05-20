@@ -3636,7 +3636,7 @@ tfw_h2_req_set_loc_hdrs(TfwHttpReq *req)
 	return 0;
 }
 
-const char base64_chars[] =
+static const char base64_chars[] =
 	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 static size_t
