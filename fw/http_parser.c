@@ -8107,8 +8107,7 @@ tfw_h2_parse_req_hdr(unsigned char *data, unsigned long len, TfwHttpReq *req,
 
 		parser->_hdr_tag = TFW_HTTP_HDR_H2_PROTOCOL;
 		if (likely(__data_available(p, 9)
-			   && C4_INT_LCM(p, 'w', 'e', 'b', 's')
-			   && C4_INT_LCM(p + 4, 'o', 'c', 'k', 'e')
+			   && C8_INT_LCM(p, 'w', 'e', 'b', 's', 'o', 'c', 'k', 'e')
 			   && TFW_LC(*(p + 8)) == 't'))
 		{
 			__FSM_H2_PSHDR_COMPLETE(Req_HdrPsProtocolV, 9);
