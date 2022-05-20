@@ -918,14 +918,9 @@ tfw_h2_resp_status_write(TfwHttpResp *resp, unsigned short status,
 static inline bool
 tfw_http_resp_is_websocket_upgrade(TfwHttpResp *resp)
 {
-	if (unlikely(test_bit(TFW_HTTP_B_CONN_UPGRADE, resp->flags)
-		     && test_bit(TFW_HTTP_B_UPGRADE_WEBSOCKET, resp->flags)
-		     && (resp->status == 101 || resp->status == 200)))
-	{
-		return true;
-	}
-
-	return false;
+	return unlikely(test_bit(TFW_HTTP_B_CONN_UPGRADE, resp->flags)
+			&& test_bit(TFW_HTTP_B_UPGRADE_WEBSOCKET, resp->flags)
+			&& (resp->status == 101 || resp->status == 200));
 }
 
 void
