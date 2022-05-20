@@ -3639,32 +3639,20 @@ tfw_h2_req_set_loc_hdrs(TfwHttpReq *req)
 static const char base64_chars[] =
 	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-static size_t
-base64_encoded_size(size_t slen)
-{
-	size_t ret;
-
-	ret = slen;
-	if (slen % 3 != 0)
-		ret += 3 - (slen % 3);
-	ret /= 3;
-	ret *= 4;
-
-	return ret;
-}
-
 static int
 base64_encode(unsigned char *dst, size_t dlen, size_t *olen,
 	      const unsigned char *src, size_t slen)
 {
-	size_t  i;
-	size_t  j;
-	size_t  v;
+	size_t i;
+	size_t j;
+	size_t v;
 
+	BUG_ON(slen != 16);
 	if (src == NULL || slen == 0)
 		return -1;
 
-	*olen = base64_encoded_size(slen);
+	/* only true if slen equals 16 */
+	*olen = 24;
 	if (dlen < *olen)
 		return -1;
 
