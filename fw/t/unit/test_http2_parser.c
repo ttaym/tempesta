@@ -245,6 +245,50 @@ TEST(http2_parser, parses_req_uri)
 #undef TEST_URI_PATH
 }
 
+TEST(http2_parser, parses_req_protocol)
+{
+
+	FOR_REQ_H2(
+	    HEADERS_FRAME_BEGIN();
+		HEADER(WO_IND(NAME(":method"), VALUE("CONNECT")));
+		HEADER(WO_IND(NAME(":scheme"), VALUE("https")));
+		HEADER(WO_IND(NAME(":protocol"), VALUE("websocket")));
+		HEADER(WO_IND(NAME(":authority"), VALUE("example.com")));
+		HEADER(WO_IND(NAME(":path"), VALUE("/")));
+	    HEADERS_FRAME_END();
+	)
+	{
+		TfwHttpHdrTbl *ht = req->h_tbl;
+		TfwStr h_protocol;
+
+		tfw_http_msg_clnthdr_val(req,
+					 &ht->tbl[TFW_HTTP_HDR_H2_PROTOCOL],
+					 TFW_HTTP_HDR_H2_PROTOCOL, &h_protocol);
+		EXPECT_TFWSTR_EQ(&h_protocol, "websocket");
+	}
+
+	EXPECT_BLOCK_REQ_H2(
+	    HEADERS_FRAME_BEGIN();
+		HEADER(WO_IND(NAME(":method"), VALUE("CONNECT")));
+		HEADER(WO_IND(NAME(":scheme"), VALUE("https")));
+		HEADER(WO_IND(NAME(":authority"), VALUE("example.com")));
+		HEADER(WO_IND(NAME(":path"), VALUE("/")));
+		HEADER(WO_IND(NAME("user-agent"), VALUE("Wget/1.13.4 (linux-gnu)")));
+	    HEADERS_FRAME_END();
+	);
+
+	EXPECT_BLOCK_REQ_H2(
+	    HEADERS_FRAME_BEGIN();
+		HEADER(WO_IND(NAME(":method"), VALUE("CONNECT")));
+		HEADER(WO_IND(NAME(":scheme"), VALUE("https")));
+		HEADER(WO_IND(NAME(":protocol"), VALUE("unknown_proto")));
+		HEADER(WO_IND(NAME(":authority"), VALUE("example.com")));
+		HEADER(WO_IND(NAME(":path"), VALUE("/")));
+		HEADER(WO_IND(NAME("user-agent"), VALUE("Wget/1.13.4 (linux-gnu)")));
+	    HEADERS_FRAME_END();
+	);
+}
+
 TEST(http2_parser, parses_enforce_ext_req)
 {
 	FOR_REQ_H2(
@@ -2781,6 +2825,7 @@ TEST_SUITE(http2_parser)
 	TEST_RUN(http2_parser, http2_check_important_fields);
 	TEST_RUN(http2_parser, parses_req_method);
 	TEST_RUN(http2_parser, parses_req_uri);
+	TEST_RUN(http2_parser, parses_req_protocol);
 	TEST_RUN(http2_parser, mangled_messages);
 	TEST_RUN(http2_parser, alphabets);
 	TEST_RUN(http2_parser, fills_hdr_tbl_for_req);
