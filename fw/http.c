@@ -945,6 +945,8 @@ tfw_h2_resp_fwd(TfwHttpResp *resp)
 
 	tfw_hpack_enc_release(&ctx->hpack, resp->flags);
 
+	/* In case of websocket h2 upgrade client stream is not closed
+	 * and request can be used further. Do not free it. */
 	if (tfw_http_resp_is_websocket_upgrade(resp))
 		tfw_http_conn_msg_free(req->pair);
 	else
@@ -5859,7 +5861,6 @@ next_msg:
 		}
 		if (TFW_MSG_H2(req)) {
 			TfwH2Ctx *ctx = tfw_h2_context(conn);
-			TfwStr protocol_val = {};
 			TfwHttpHdrTbl *ht = req->h_tbl;
 
 			/* If the parser met END_HEADERS flag we can be sure
@@ -5889,6 +5890,7 @@ next_msg:
 						&ht->tbl[TFW_HTTP_HDR_H2_PROTOCOL])
 					&& req->method == TFW_HTTP_METH_CONNECT))
 				{
+					TfwStr protocol_val = {};
 					__h2_msg_hdr_val(
 						&ht->tbl[TFW_HTTP_HDR_H2_PROTOCOL],
 						&protocol_val);
@@ -5910,11 +5912,8 @@ next_msg:
 				if (test_bit(TFW_HTTP_B_UPGRADE_WEBSOCKET,
 					     req->flags))
 				{
-					if (likely(
-						!tfw_h2_parse_req_semifinish(req)))
-					{
+					if (likely(!tfw_h2_parse_req_semifinish(req)))
 						break;
-					}
 				}
 				else if (likely(!tfw_h2_parse_req_finish(req))) {
 					break;
