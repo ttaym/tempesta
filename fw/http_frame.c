@@ -745,8 +745,7 @@ tfw_h2_stream_id_close(TfwHttpReq *req, unsigned char type,
 		return 0;
 	}
 
-	if (type < _HTTP2_UNDEFINED)
-	{
+	if (type < _HTTP2_UNDEFINED) {
 		if (!STREAM_SEND_PROCESS(stream, type, flags))
 			id = stream->id;
 

@@ -3658,22 +3658,22 @@ base64_encode(unsigned char *dst, size_t dlen, size_t *olen,
 	if (dlen < *olen)
 		return -1;
 
-	for (i=0, j=0; i<slen; i+=3, j+=4) {
+	for (i = 0, j = 0; i < slen; i += 3, j += 4) {
 		v = src[i];
-		v = i+1 < slen ? v << 8 | src[i+1] : v << 8;
-		v = i+2 < slen ? v << 8 | src[i+2] : v << 8;
+		v = i + 1 < slen ? v << 8 | src[i + 1] : v << 8;
+		v = i + 2 < slen ? v << 8 | src[i + 2] : v << 8;
 
 		dst[j]   = base64_chars[(v >> 18) & 0x3F];
-		dst[j+1] = base64_chars[(v >> 12) & 0x3F];
-		if (i+1 < slen) {
-			dst[j+2] = base64_chars[(v >> 6) & 0x3F];
+		dst[j + 1] = base64_chars[(v >> 12) & 0x3F];
+		if (i + 1 < slen) {
+			dst[j + 2] = base64_chars[(v >> 6) & 0x3F];
 		} else {
-			dst[j+2] = '=';
+			dst[j + 2] = '=';
 		}
-		if (i+2 < slen) {
-			dst[j+3] = base64_chars[v & 0x3F];
+		if (i + 2 < slen) {
+			dst[j + 3] = base64_chars[v & 0x3F];
 		} else {
-			dst[j+3] = '=';
+			dst[j + 3] = '=';
 		}
 	}
 
@@ -5874,36 +5874,29 @@ next_msg:
 
 				__set_bit(TFW_HTTP_B_HEADERS_PARSED, req->flags);
 			}
-
 			else if (!test_bit(TFW_HTTP_B_HEADERS_PARSED, req->flags))
 				goto skip;
 
 			if (ctx->hdr.type == HTTP2_DATA
 			    && stream->proto == HTTP2_STREAM_PROTO_WEBSOCKET)
-			{
 				return tfw_ws_msg_process(conn, stream, skb);
-			}
 
-			if (!test_bit(TFW_HTTP_B_UPGRADE_WEBSOCKET, req->flags)) {
-				if (unlikely(
-					!TFW_STR_EMPTY(
-						&ht->tbl[TFW_HTTP_HDR_H2_PROTOCOL])
-					&& req->method == TFW_HTTP_METH_CONNECT))
+			if (unlikely(!test_bit(TFW_HTTP_B_UPGRADE_WEBSOCKET, req->flags)
+			    && !TFW_STR_EMPTY(&ht->tbl[TFW_HTTP_HDR_H2_PROTOCOL])
+			    && req->method == TFW_HTTP_METH_CONNECT))
+			{
+				TfwStr protocol_val = {};
+				__h2_msg_hdr_val(&ht->tbl[TFW_HTTP_HDR_H2_PROTOCOL],
+						 &protocol_val);
+				if (!tfw_str_eq_cstr(&protocol_val, S_WEBSOCKET,
+						     SLEN(S_WEBSOCKET),
+						     TFW_STR_EQ_CASEI))
 				{
-					TfwStr protocol_val = {};
-					__h2_msg_hdr_val(
-						&ht->tbl[TFW_HTTP_HDR_H2_PROTOCOL],
-						&protocol_val);
-					if (!tfw_str_eq_cstr(&protocol_val, S_WEBSOCKET,
-							SLEN(S_WEBSOCKET),
-							TFW_STR_EQ_CASEI))
-					{
-						T_WARN("Unsupported upgrade protocol\n");
-						return TFW_BLOCK;
-					}
-					__set_bit(TFW_HTTP_B_UPGRADE_WEBSOCKET,
-						req->flags);
+					T_WARN("Unsupported upgrade protocol\n");
+					return TFW_BLOCK;
 				}
+				__set_bit(TFW_HTTP_B_UPGRADE_WEBSOCKET,
+					  req->flags);
 			}
 
 			if (test_bit(TFW_HTTP_B_UPGRADE_WEBSOCKET, req->flags)
@@ -5924,7 +5917,6 @@ next_msg:
 				return TFW_BLOCK;
 			}
 		}
-
 skip:
 		r = tfw_gfsm_move(&conn->state, TFW_HTTP_FSM_REQ_CHUNK, &data_up);
 		T_DBG3("TFW_HTTP_FSM_REQ_CHUNK return code %d\n", r);
