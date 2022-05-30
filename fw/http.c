@@ -947,10 +947,12 @@ tfw_h2_resp_fwd(TfwHttpResp *resp)
 
 	/* In case of websocket h2 upgrade client stream is not closed
 	 * and request can be used further. Do not free it. */
-	if (tfw_http_resp_is_websocket_upgrade(resp))
+	if (tfw_http_resp_is_websocket_upgrade(resp)) {
 		tfw_http_conn_msg_free(req->pair);
-	else
+		req->pair = NULL;
+	} else {
 		tfw_http_resp_pair_free(req);
+	}
 }
 
 static void

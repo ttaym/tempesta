@@ -617,8 +617,17 @@ __tfw_h2_stream_unlink(TfwH2Ctx *ctx, TfwStream *stream)
 	if (hmreq)
 		hmreq->stream = NULL;
 
-	/* Note that we may have not completed requests when websockets upgrade,
-	 * so we should not free msg on not TFW_HTTP_B_FULLY_PARSED messages. */
+	/*
+	* If the request is linked with a stream, but not complete yet,
+	* it must be deleted right here to avoid leakage, because in
+	* this case it is not used anywhere yet. When request is
+	* assembled and complete, it will be removed (due to some
+	* processing error) in @tfw_http_req_process(), or in other
+	* cases controlled by server connection side (after adding to
+	* @fwd_queue): successful response sending, eviction etc.
+	*/
+	if (!test_bit(TFW_HTTP_B_FULLY_PARSED, hmreq->flags) && !hmreq->resp)
+		tfw_http_conn_msg_free(hmreq);
 }
 
 static inline void
